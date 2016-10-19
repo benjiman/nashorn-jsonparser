@@ -3,6 +3,8 @@ nashorn-jsonparser
 
 Example using Nashorn to parse JSON strings to Java interfaces.
 
+Currently only supports flat JSON (not nested objects)
+
 ```java
   public interface Person {
       String firstName();
