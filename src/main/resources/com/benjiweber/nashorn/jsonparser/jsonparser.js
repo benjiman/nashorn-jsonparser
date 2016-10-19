@@ -22,8 +22,6 @@ function parse(type, json) {
             } else {
                 var array = [];
                 for each (value in parsed[key]) {
-                }
-                for each (value in parsed[key]) {
                        array.push(parse(typeForComplexArrayValue(key, type), JSON.stringify(value)))
                 }
                 complexValues[key] = new Packages.java.util.ArrayList(array);
