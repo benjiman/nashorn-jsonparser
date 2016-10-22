@@ -84,4 +84,30 @@ public class JsonTest {
         assertEquals(Collections.emptyList(), example.ids());
     }
 
+
+    public interface ArrayProperty {
+        int[] ids();
+    }
+    @Test
+    public void example_parsing_with_array_to_array() {
+        String json = "{ \"ids\": [1111, 2222] }";
+        ArrayProperty example = Json.parse(json, ArrayProperty.class);
+        assertEquals(1111, example.ids()[0]);
+        assertEquals(2222, example.ids()[1]);
+    }
+
+    public interface WithArraysToArray{
+        Person[] people();
+    }
+    @Test
+    public void example_parsing_nested_json_with_array_to_array() {
+        String json = "{ \"people\": [ { \"firstName\": \"benji\", \"lastName\": \"weber\" },  { \"firstName\": \"bob\", \"lastName\": \"McBobFace\" } ] }";
+        WithArraysToArray example = Json.parse(json, WithArraysToArray.class);
+        assertEquals("benji", example.people()[0].firstName());
+        assertEquals("weber", example.people()[0].lastName());
+        assertEquals("bob", example.people()[1].firstName());
+        assertEquals("McBobFace", example.people()[1].lastName());
+    }
+
+
 }

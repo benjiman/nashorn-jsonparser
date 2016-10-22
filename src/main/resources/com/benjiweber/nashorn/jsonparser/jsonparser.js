@@ -1,7 +1,7 @@
 var classByName = Packages.java.lang.Class.forName
 var List = Packages.java.util.ArrayList
 function wrapInFunction(value) function() value
-
+var System=Packages.java.lang.System;
 function isArray(value)
     typeof value === 'object' &&
     typeof value.length !== 'undefined'
@@ -21,6 +21,12 @@ function typeForObjectArrayValue(key, containerType)
         .getActualTypeArguments()[0]
         .getName()
 
+function mappingToArray(propertyName, type)
+    typeForObjectValue(propertyName, type).startsWith('[')
+
+function nameOfArrayType(propertyName, type)
+    typeForObjectValue(propertyName, type).substring(2).replaceAll(";$","")
+
 function wrapValuesInFunctions(map) {
     var wrapped = {}
     for (var key in map) wrapped[key] = wrapInFunction(map[key])
@@ -30,19 +36,25 @@ function wrapValuesInFunctions(map) {
 function containsObjects(array) array.length > 0 && !isSimpleValue(array[0])
 
 function parseObjectArray(array, key, type) {
-    return new List(
-        array.map(function(item) parse(
+    if (mappingToArray(key, type)) {
+        return array.map(function(item) parse(
+            nameOfArrayType(key, type),
+            JSON.stringify(item)
+        ));
+    } else {
+        return new List(array.map(function(item) parse(
             typeForObjectArrayValue(key, type),
             JSON.stringify(item)
-        ))
-    )
+        )))
+    }
+
 }
 
 function parseProperty(type, parsedJSON, property) {
     if (isArray(property.value)) {
         return containsObjects(property.value)
-                ? parseObjectArray(property.value, property.name, type)
-                : new List(property.value)
+            ? parseObjectArray(property.value, property.name, type)
+            : mappingToArray(property.name, type) ? property.value : new List(property.value)
     } else if (!isSimpleValue(property.value)) {
         return parse(typeForObjectValue(property.name, type), JSON.stringify(property.value))
     } else {
