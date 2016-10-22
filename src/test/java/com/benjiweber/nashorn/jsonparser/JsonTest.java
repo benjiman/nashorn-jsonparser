@@ -145,4 +145,21 @@ public class JsonTest {
         assertEquals("bob", person2.firstName());
         assertEquals("McBobFace", person2.lastName());
     }
+
+
+    public interface ColourBoxed {
+        Integer red();
+        Integer green();
+        Integer blue();
+    }
+
+    @Test
+    public void example_parsing_colours_boxed() {
+        String json = "{ \"red\": 5, \"green\": 2, \"blue\": 9 }";
+        ColourBoxed colour = Json.parse(json, ColourBoxed.class);
+        assertEquals(Integer.valueOf(5), colour.red());
+        assertEquals(Integer.valueOf(2), colour.green());
+        assertEquals(Integer.valueOf(9), colour.blue());
+    }
+
 }
