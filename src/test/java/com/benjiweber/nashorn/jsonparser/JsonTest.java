@@ -2,8 +2,7 @@ package com.benjiweber.nashorn.jsonparser;
 
 import org.junit.Test;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -109,5 +108,41 @@ public class JsonTest {
         assertEquals("McBobFace", example.people()[1].lastName());
     }
 
+    public interface WithCollection{
+        Collection<Person> people();
+    }
+    @Test
+    public void example_parsing_nested_json_with_array_to_collection() {
+        String json = "{ \"people\": [ { \"firstName\": \"benji\", \"lastName\": \"weber\" },  { \"firstName\": \"bob\", \"lastName\": \"McBobFace\" } ] }";
+        WithCollection example = Json.parse(json, WithCollection.class);
 
+        Iterator<Person> iterator = example.people().iterator();
+
+        Person person1 = iterator.next();
+        assertEquals("benji", person1.firstName());
+        assertEquals("weber", person1.lastName());
+
+        Person person2 = iterator.next();
+        assertEquals("bob", person2.firstName());
+        assertEquals("McBobFace", person2.lastName());
+    }
+
+    public interface WithSet{
+        Set<Person> people();
+    }
+    @Test
+    public void example_parsing_nested_json_with_array_to_set() {
+        String json = "{ \"people\": [ { \"firstName\": \"benji\", \"lastName\": \"weber\" },  { \"firstName\": \"bob\", \"lastName\": \"McBobFace\" } ] }";
+        WithSet example = Json.parse(json, WithSet.class);
+
+        Iterator<Person> iterator = example.people().iterator();
+
+        Person person1 = iterator.next();
+        assertEquals("benji", person1.firstName());
+        assertEquals("weber", person1.lastName());
+
+        Person person2 = iterator.next();
+        assertEquals("bob", person2.firstName());
+        assertEquals("McBobFace", person2.lastName());
+    }
 }

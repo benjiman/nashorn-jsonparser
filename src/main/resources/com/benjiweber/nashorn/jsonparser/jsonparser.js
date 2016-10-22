@@ -1,5 +1,7 @@
 var classByName = Packages.java.lang.Class.forName
 var List = Packages.java.util.ArrayList
+var Set = Packages.java.util.LinkedHashSet
+
 function wrapInFunction(value) function() value
 var System=Packages.java.lang.System;
 function isArray(value)
@@ -36,16 +38,20 @@ function wrapValuesInFunctions(map) {
 function containsObjects(array) array.length > 0 && !isSimpleValue(array[0])
 
 function parseObjectArray(array, key, type) {
+    System.out.println(typeForObjectValue(key, type));
     if (mappingToArray(key, type)) {
         return array.map(function(item) parse(
             nameOfArrayType(key, type),
             JSON.stringify(item)
         ));
     } else {
-        return new List(array.map(function(item) parse(
+        var values = array.map(function(item) parse(
             typeForObjectArrayValue(key, type),
             JSON.stringify(item)
-        )))
+        ))
+        return typeForObjectValue(key, type) === 'java.util.Set'
+            ? new Set(values)
+            : new List(values)
     }
 
 }
